@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRunner } from './runner-factory.ts';
+import { detectEnvironment } from './backend-detect.ts';
 import {
   buildAntigravityArgs,
   AntigravityRunner,
@@ -58,3 +59,13 @@ describe('AntigravityRunner mock bin', () => {
     }
   });
 });
+
+describe('backend detection', () => {
+  it('detects antigravity in environment checks', async () => {
+    const checks = await detectEnvironment();
+    const agy = checks.find((c) => c.name === 'antigravity');
+    expect(agy).toBeDefined();
+    expect(typeof agy?.available).toBe('boolean');
+  });
+});
+
