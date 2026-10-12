@@ -6607,6 +6607,9 @@ export function createApp(deps: ServerDeps) {
         opencode: modelPresetSchema,
         cursor: modelPresetSchema,
         pi: modelPresetSchema,
+        copilot: modelPresetSchema,
+        junie: modelPresetSchema,
+        antigravity: modelPresetSchema,
       })
       .optional(),
     // Per-runner "auto is the default" override (#906). Additive, and necessarily
@@ -6618,7 +6621,11 @@ export function createApp(deps: ServerDeps) {
         claude: autoModelSchema,
         codex: autoModelSchema,
         opencode: autoModelSchema,
+        cursor: autoModelSchema,
         pi: autoModelSchema,
+        copilot: autoModelSchema,
+        junie: autoModelSchema,
+        antigravity: autoModelSchema,
       })
       .optional(),
     // Concurrency + memory guard (Settings → Resources). maxParallel clamps to
