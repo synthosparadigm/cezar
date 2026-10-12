@@ -146,7 +146,7 @@ export const AGENT_DESCRIPTORS: AgentDescriptor[] = [
         'antigravity',
         'mcp',
         'MCP',
-        'User ~/.gemini/antigravity/mcp.json and project .antigravity/mcp.json.',
+        'A dedicated .antigravity/mcp.json or .mcp.json (key: mcpServers), shared via version control.',
       ),
       group('antigravity', 'memory', 'Memory & instructions'),
     ],

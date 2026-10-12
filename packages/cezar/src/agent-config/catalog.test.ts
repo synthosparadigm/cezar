@@ -28,7 +28,7 @@ describe('agent-config catalog', () => {
   it('<repo>/AGENTS.md is ONE entry read by every runner that reads it', () => {
     const agents = CONFIG_FILES.filter((f) => f.label === 'AGENTS.md' && f.scope === 'project');
     expect(agents).toHaveLength(1);
-    expect(agents[0]!.runners).toEqual(['codex', 'opencode', 'copilot']);
+    expect(agents[0]!.runners).toEqual(['codex', 'opencode', 'copilot', 'antigravity']);
   });
 
   it('resolves repo-relative paths under the repo root', () => {
@@ -56,7 +56,7 @@ describe('agent-config catalog', () => {
 
   it('marks only Claude’s gitignored personal layer as seeded', () => {
     const seeded = CONFIG_FILES.filter((f) => f.seeded).map((f) => f.id).sort();
-    expect(seeded).toEqual(['claude.local.memory', 'claude.local.settings']);
+    expect(seeded).toEqual(['antigravity.local.settings', 'claude.local.memory', 'claude.local.settings']);
     for (const f of CONFIG_FILES) {
       if (f.seeded) expect(f.tracked).toBe('gitignored');
     }
