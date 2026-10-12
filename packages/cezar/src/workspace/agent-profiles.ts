@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { readdir, realpath } from 'node:fs/promises';
 import { profileEnv, looksLikeProfileDir } from '../core/agent-profiles.ts';
 import type { ProviderId } from '../core/provider-auth.ts';
@@ -53,6 +54,7 @@ const PROVIDER_HOME: Record<ProviderId, (home: ReturnType<typeof agentHomePaths>
   pi: (home) => home.claude,
   junie: (home) => home.junie,
   copilot: (home) => home.copilot,
+  antigravity: (home) => join(home.claude, '..', '.gemini'),
 };
 
 /**

@@ -64,6 +64,11 @@ const connectedResults: Record<string, ProviderCommandResult> = {
     stderr: '',
     exitCode: 0,
   },
+  antigravity: {
+    stdout: 'gemini-3.8-flash-medium\tGemini 3.8 Flash (Medium)\n',
+    stderr: '',
+    exitCode: 0,
+  },
 };
 
 const originalEnv = {
@@ -75,6 +80,8 @@ const originalEnv = {
   CEZ_PI_BIN: process.env.CEZ_PI_BIN,
   CURSOR_API_KEY: process.env.CURSOR_API_KEY,
   CEZ_COPILOT_BIN: process.env.CEZ_COPILOT_BIN,
+  CEZ_ANTIGRAVITY_BIN: process.env.CEZ_ANTIGRAVITY_BIN,
+  CEZ_AGY_BIN: process.env.CEZ_AGY_BIN,
 };
 
 beforeEach(() => {
@@ -86,6 +93,8 @@ beforeEach(() => {
   delete process.env.CEZ_PI_BIN;
   delete process.env.CURSOR_API_KEY;
   delete process.env.CEZ_COPILOT_BIN;
+  delete process.env.CEZ_ANTIGRAVITY_BIN;
+  delete process.env.CEZ_AGY_BIN;
 });
 
 afterEach(() => {
@@ -107,6 +116,7 @@ function resultFor(executable: string): ProviderCommandResult {
   if (executable === 'agent' || executable.includes('cursor')) return connectedResults.cursor!;
   if (executable.includes('opencode')) return connectedResults.opencode!;
   if (executable.includes('copilot')) return connectedResults.copilot!;
+  if (executable.includes('agy') || executable.includes('antigravity')) return connectedResults.antigravity!;
   return connectedResults.pi!;
 }
 
@@ -661,6 +671,7 @@ describe('ProviderAuthService', () => {
         { provider: 'pi' },
         { provider: 'junie', status: 'connected' },
         { provider: 'copilot' },
+        { provider: 'antigravity' },
       ],
     });
   });
@@ -685,6 +696,7 @@ describe('ProviderAuthService', () => {
       { executable: 'agent', args: ['status', '--format', 'json'], timeoutMs: 10_000 },
       { executable: 'pi', args: ['--list-models'], timeoutMs: 10_000 },
       { executable: 'copilot', args: ['--acp'], timeoutMs: 10_000 },
+      { executable: expect.stringMatching(/agy(\.exe)?$/), args: ['models'], timeoutMs: 10_000 },
     ]);
     release();
     await expect(pending).resolves.toBeDefined();
@@ -1141,6 +1153,7 @@ describe('ProviderAuthService', () => {
         { provider: 'pi', status: 'connected' },
         { provider: 'junie', status: 'connected' },
         { provider: 'copilot', status: 'connected' },
+        { provider: 'antigravity', status: 'connected' },
       ],
     });
     expect(runCommand).not.toHaveBeenCalled();
@@ -1254,6 +1267,7 @@ describe('ProviderAuthService', () => {
         { provider: 'pi', status: 'connected' },
         { provider: 'junie', status: 'connected' },
         { provider: 'copilot', status: 'connected' },
+        { provider: 'antigravity', status: 'connected' },
       ],
     });
     expect(runCommand).not.toHaveBeenCalled();

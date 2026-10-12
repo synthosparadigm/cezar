@@ -51,11 +51,13 @@ const CONNECTED_OUTPUT: Record<ProviderId, string> = {
   // Copilot's probe drives its ACP server, so its "connected" evidence is the `session/new`
   // answer (`.ai/runs/2026-09-27-copilot-cli-runner/copilot-acp-notes.md`).
   copilot: '{"jsonrpc":"2.0","id":1,"result":{"sessionId":"3f1b6f2e-0000-4000-8000-1f2e3d4c5b6a"}}',
+  antigravity: 'gemini-3.8-flash-medium\tGemini 3.8 Flash (Medium)',
 };
 
 const providerForExecutable = (executable: string): ProviderId => {
-  if (executable === 'claude' || executable === 'codex' || executable === 'opencode' || executable === 'pi' || executable === 'junie' || executable === 'copilot') return executable;
+  if (executable === 'claude' || executable === 'codex' || executable === 'opencode' || executable === 'pi' || executable === 'junie' || executable === 'copilot' || executable === 'antigravity') return executable;
   if (executable === 'agent') return 'cursor';
+  if (executable === 'agy' || executable.includes('agy')) return 'antigravity';
   throw new Error(`unexpected executable: ${executable}`);
 };
 

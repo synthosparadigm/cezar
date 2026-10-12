@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { AGENT_MODELS_LOCKED_ENV } from './agent-model-policy.ts';
 import { profileEnv } from './agent-profiles.ts';
@@ -7,7 +8,7 @@ import { resolveClaudeBin } from './claude-bin.ts';
 import { quoteExecutable, withEnvPrefix } from './shell-env.ts';
 import { probeJunieAuthentication } from './junie-auth-probe.ts';
 
-export const PROVIDER_IDS = ['claude', 'codex', 'opencode', 'cursor', 'pi', 'junie', 'copilot'] as const;
+export const PROVIDER_IDS = ['claude', 'codex', 'opencode', 'cursor', 'pi', 'junie', 'copilot', 'antigravity'] as const;
 export type ProviderId = (typeof PROVIDER_IDS)[number];
 export type ProviderConnectionState =
   | 'connected'
@@ -380,7 +381,45 @@ const DESCRIPTORS: readonly ProviderDescriptor[] = [
     parse: parseCopilotStatus,
     stdin: copilotAcpProbeStdin,
   },
+  {
+    id: 'antigravity',
+    executable: () => resolveAntigravityBin(),
+    statusArgs: ['models'],
+    loginArgs: ['auth', 'login'],
+    installHint: 'Install Google Antigravity CLI (`agy`), then authenticate.',
+    parse: parseAntigravityStatus,
+  },
 ];
+
+export function resolveAntigravityBin(optsBin?: string): string {
+  if (optsBin) return optsBin;
+  if (process.env.CEZ_ANTIGRAVITY_BIN) return process.env.CEZ_ANTIGRAVITY_BIN;
+  if (process.env.CEZ_AGY_BIN) return process.env.CEZ_AGY_BIN;
+  const userProfile = process.env.USERPROFILE || process.env.HOME || '';
+  if (process.platform === 'win32') {
+    const winPath = `${userProfile}\\.gemini\\bin\\agy.exe`;
+    try {
+      if (existsSync(winPath)) return winPath;
+    } catch {}
+    return 'agy.exe';
+  }
+  const nixPath = `${userProfile}/.gemini/bin/agy`;
+  try {
+    if (existsSync(nixPath)) return nixPath;
+  } catch {}
+  return 'agy';
+}
+
+function parseAntigravityStatus(result: ProviderCommandResult): ProviderConnectionState | null {
+  const output = `${result.stdout}\n${result.stderr}`.toLowerCase();
+  if (result.exitCode === 0 || output.includes('authenticated') || output.includes('logged in') || output.includes('available models') || output.includes('gemini')) {
+    return 'connected';
+  }
+  if (output.includes('not logged in') || output.includes('unauthenticated') || output.includes('login required')) {
+    return 'disconnected';
+  }
+  return null;
+}
 
 function parseCursorStatus(result: ProviderCommandResult): ProviderConnectionState | null {
   // probe() already handles ENOENT / any other errorCode before calling parse() — result here

@@ -2,11 +2,12 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { resolveCursorAgentBin } from './cursor-agent-runner.ts';
 import { resolveClaudeBin } from './claude-bin.ts';
+import { resolveAntigravityBin } from './provider-auth.ts';
 
 const exec = promisify(execFile);
 
 export interface BackendCheck {
-  name: 'claude' | 'codex' | 'opencode' | 'cursor' | 'pi' | 'junie' | 'copilot' | 'gh' | 'git';
+  name: 'claude' | 'codex' | 'opencode' | 'cursor' | 'pi' | 'junie' | 'copilot' | 'antigravity' | 'gh' | 'git';
   available: boolean;
   version?: string;
   hint?: string;
@@ -14,7 +15,7 @@ export interface BackendCheck {
 
 /**
  * Probe the host for everything cez leans on: the agent CLIs (`claude`, and
- * the optional `codex` / `opencode` / `cursor` / `pi` / `junie` / `copilot`
+ * the optional `codex` / `opencode` / `cursor` / `pi` / `junie` / `copilot` / `antigravity`
  * alternatives), `gh` (GitHub auth for PR creation) and `git`. Nothing is required except at
  * least one agent CLI — the GUI degrades gracefully, only offers the
  * runners that are present, and shows the hints for the rest.
@@ -28,6 +29,7 @@ export async function detectEnvironment(): Promise<BackendCheck[]> {
     probePi(),
     probeJunie(),
     probeCopilot(),
+    probeAntigravity(),
     probeGh(),
     probeGit(),
   ]);
@@ -211,6 +213,28 @@ async function probeCopilot(): Promise<BackendCheck> {
       name: 'copilot',
       available: false,
       hint: 'optional: install GitHub Copilot CLI (`npm i -g @github/copilot`) and run `copilot login` to use the copilot runner',
+    };
+  }
+}
+
+async function probeAntigravity(): Promise<BackendCheck> {
+  if (process.env.CEZ_DRY_RUN === '1') {
+    return { name: 'antigravity', available: true, version: 'mock (CEZ_DRY_RUN=1)' };
+  }
+  const bin = resolveAntigravityBin();
+  try {
+    const { stdout } = await exec(bin, ['--version'], { timeout: 10_000 });
+    const version = stdout.trim();
+    return {
+      name: 'antigravity',
+      available: true,
+      version: version || 'installed',
+    };
+  } catch {
+    return {
+      name: 'antigravity',
+      available: false,
+      hint: 'optional: install Google Antigravity CLI (`agy`) or set CEZ_ANTIGRAVITY_BIN to use the antigravity runner',
     };
   }
 }

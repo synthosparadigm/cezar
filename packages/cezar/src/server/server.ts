@@ -79,6 +79,7 @@ import { discoverCodexModels } from '../core/codex-model-catalog.ts';
 import { discoverCursorModels } from '../core/cursor-model-catalog.ts';
 import { discoverOpencodeModels } from '../core/opencode-model-catalog.ts';
 import { discoverJunieModels } from '../core/junie-model-catalog.ts';
+import { discoverAntigravityModels } from '../core/antigravity-model-catalog.ts';
 import {
   PROVIDER_IDS,
   ProviderAuthService,
@@ -1260,6 +1261,7 @@ export function createApp(deps: ServerDeps) {
       opencode: { discover: () => discoverOpencodeModels({ cwd: bootRoot }) },
       junie: { discover: () => discoverJunieModels({ cwd: bootRoot }) },
       cursor: { discover: () => discoverCursorModels() },
+      antigravity: { discover: () => discoverAntigravityModels() },
     },
   });
   const providerAuth = deps.providerAuth ?? new ProviderAuthService({ cwd: bootRoot });

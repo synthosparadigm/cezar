@@ -56,6 +56,7 @@ export const RUNNERS: readonly RunnerOption[] = [
   { id: 'cursor', label: 'cursor', desc: 'Cursor Agent CLI' },
   { id: 'pi', label: 'pi', desc: 'pi CLI (provider/model)' },
   { id: 'copilot', label: 'copilot', desc: 'GitHub Copilot CLI (ACP)' },
+  { id: 'antigravity', label: 'antigravity', desc: 'Google Antigravity CLI (agy)' },
 ]
 
 export interface ModelPreset {
@@ -107,6 +108,12 @@ export const MODELS_BY_RUNNER: Record<Runner, readonly ModelPreset[]> = {
   // stays free text for anything the account is entitled to.
   copilot: [
     { id: '', label: 'auto', desc: 'Let Copilot pick the model' },
+  ],
+  antigravity: [
+    { id: '', label: 'auto', desc: 'Use your Antigravity default model' },
+    { id: 'gemini-3.8-flash-medium', label: 'gemini-3.8-flash-medium', desc: 'Gemini 3.8 Flash (Medium)' },
+    { id: 'gemini-3.8-flash-high', label: 'gemini-3.8-flash-high', desc: 'Gemini 3.8 Flash (High)' },
+    { id: 'claude-sonnet-4-6', label: 'claude-sonnet-4-6', desc: 'Claude Sonnet 4.6 (Thinking)' },
   ],
 }
 

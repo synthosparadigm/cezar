@@ -5,6 +5,7 @@ import { JunieRunner } from './junie-runner.ts';
 import { CopilotAcpRunner } from './copilot-acp-runner.ts';
 import { OpencodeServerRunner } from './opencode-server-runner.ts';
 import { CursorAgentRunner } from './cursor-agent-runner.ts';
+import { AntigravityRunner } from './antigravity-runner.ts';
 import { PiRunner } from './pi-runner.ts';
 
 /**
@@ -15,6 +16,8 @@ import { PiRunner } from './pi-runner.ts';
  */
 export function createRunner(backend: AgentBackend | RunnerId | undefined): AgentRunner {
   switch (backend) {
+    case 'antigravity':
+      return new AntigravityRunner();
     case 'codex':
       return new CodexAppServerRunner();
     case 'opencode':
