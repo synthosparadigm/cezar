@@ -136,6 +136,21 @@ export const AGENT_DESCRIPTORS: AgentDescriptor[] = [
       ),
     ],
   },
+  {
+    id: 'antigravity',
+    label: 'Google Antigravity',
+    note: EDITOR_PLUS_COMMIT,
+    groups: [
+      group('antigravity', 'settings', 'Settings'),
+      group(
+        'antigravity',
+        'mcp',
+        'MCP',
+        'User ~/.gemini/antigravity/mcp.json and project .antigravity/mcp.json.',
+      ),
+      group('antigravity', 'memory', 'Memory & instructions'),
+    ],
+  },
 ]
 
 export function descriptorFor(agent: Runner): AgentDescriptor {

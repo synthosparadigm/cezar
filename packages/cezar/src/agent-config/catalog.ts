@@ -40,6 +40,8 @@ export interface AgentHomePaths {
   copilot: string;
   /** `~/.junie` — no relocation var documented (see `PROFILE_ENV_VAR.junie`) */
   junie: string;
+  /** `~/.gemini/antigravity` */
+  antigravity: string;
 }
 
 export interface ConfigFileDef {
@@ -89,6 +91,7 @@ const COPILOT_MCP_DOCS = 'https://docs.github.com/en/copilot/how-tos/copilot-cli
 const PRIVATE_MCP_DOCS = 'https://github.com/open-mercato/cezar/blob/main/.ai/specs/2026-10-07-private-project-mcp.md';
 const COPILOT_INSTRUCTIONS_DOCS =
   'https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot';
+const ANTIGRAVITY_DOCS = 'https://github.com/google-deepmind/antigravity';
 
 /**
  * The table. Order is presentation order: per runner, then user → project →
@@ -436,6 +439,70 @@ export const CONFIG_FILES: ConfigFileDef[] = [
     holdsMcp: true,
     precedence: 'Project-scoped MCP servers for Cursor Agent CLI, shared via version control.',
     docsUrl: CURSOR_CLI_CONFIG_DOCS,
+  },
+
+  // ---- Google Antigravity ----
+  {
+    id: 'antigravity.user.settings',
+    runners: ['antigravity'],
+    kind: 'settings',
+    scope: 'user',
+    resolve: (_repo, home) => join(home.antigravity, 'settings.json'),
+    label: '~/.gemini/antigravity/settings.json',
+    format: 'json',
+    tracked: 'outside-repo',
+    precedence: 'User-scoped configuration for Google Antigravity.',
+    docsUrl: ANTIGRAVITY_DOCS,
+  },
+  {
+    id: 'antigravity.user.mcp',
+    runners: ['antigravity'],
+    kind: 'mcp',
+    scope: 'user',
+    resolve: (_repo, home) => join(home.antigravity, 'mcp.json'),
+    label: '~/.gemini/antigravity/mcp.json',
+    format: 'json',
+    tracked: 'outside-repo',
+    holdsMcp: true,
+    precedence: 'User-scoped MCP servers for Google Antigravity.',
+    docsUrl: ANTIGRAVITY_DOCS,
+  },
+  {
+    id: 'antigravity.project.mcp',
+    runners: ['antigravity'],
+    kind: 'mcp',
+    scope: 'project',
+    resolve: (repo) => join(repo, '.antigravity', 'mcp.json'),
+    label: '.antigravity/mcp.json',
+    format: 'json',
+    tracked: 'tracked',
+    holdsMcp: true,
+    precedence: 'Project-scoped MCP servers for Google Antigravity, shared via version control.',
+    docsUrl: ANTIGRAVITY_DOCS,
+  },
+  {
+    id: 'antigravity.project.rules',
+    runners: ['antigravity'],
+    kind: 'memory',
+    scope: 'project',
+    resolve: (repo) => join(repo, '.antigravity', 'rules'),
+    label: '.antigravity/rules',
+    format: 'markdown',
+    tracked: 'tracked',
+    precedence: 'Workspace-level instructions and rules for Google Antigravity.',
+    docsUrl: ANTIGRAVITY_DOCS,
+  },
+  {
+    id: 'antigravity.project.system',
+    runners: ['antigravity'],
+    kind: 'memory',
+    scope: 'project',
+    resolve: (repo) => join(repo, '.antigravity', 'system.md'),
+    label: '.antigravity/system.md',
+    format: 'markdown',
+    tracked: 'tracked',
+    precedence: 'Workspace-level system instructions for Google Antigravity.',
+    docsUrl: ANTIGRAVITY_DOCS,
   },
 
   // ---- Shared: cezar's private, per-project MCP servers (spec 2026-10-07-private-project-mcp) ----

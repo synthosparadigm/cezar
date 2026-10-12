@@ -208,6 +208,7 @@ const DISCOVERY_RUNNER_LABEL: Record<ModelDiscoveryRunner, string> = {
   opencode: 'OpenCode',
   junie: 'Junie',
   cursor: 'Cursor',
+  antigravity: 'Antigravity',
 }
 
 export function modelCatalogStatus(

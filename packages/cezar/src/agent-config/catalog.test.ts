@@ -8,6 +8,7 @@ const HOME: AgentHomePaths = {
   cursor: '/home/u/.cursor',
   copilot: '/home/u/.copilot',
   junie: '/home/u/.junie',
+  antigravity: '/home/u/.gemini/antigravity',
 };
 
 describe('agent-config catalog', () => {
@@ -47,6 +48,10 @@ describe('agent-config catalog', () => {
     expect(findConfigFile('cursor.project.settings')!.resolve('/repo', HOME)).toBe('/repo/.cursor/cli.json');
     expect(findConfigFile('cursor.user.mcp')!.resolve('/repo', HOME)).toBe('/home/u/.cursor/mcp.json');
     expect(findConfigFile('cursor.project.mcp')!.resolve('/repo', HOME)).toBe('/repo/.cursor/mcp.json');
+    expect(findConfigFile('antigravity.user.settings')!.resolve('/repo', HOME)).toBe(
+      '/home/u/.gemini/antigravity/settings.json',
+    );
+    expect(findConfigFile('antigravity.project.mcp')!.resolve('/repo', HOME)).toBe('/repo/.antigravity/mcp.json');
   });
 
   it('marks only Claude’s gitignored personal layer as seeded', () => {
@@ -66,6 +71,8 @@ describe('agent-config catalog', () => {
   it('holdsMcp is set exactly where MCP servers actually live', () => {
     const mcp = CONFIG_FILES.filter((f) => f.holdsMcp).map((f) => f.id).sort();
     expect(mcp).toEqual([
+      'antigravity.project.mcp',
+      'antigravity.user.mcp',
       // cezar's own private, per-project servers (spec 2026-10-07-private-project-mcp).
       'cezar.private.mcp',
       'claude.project.mcp',
